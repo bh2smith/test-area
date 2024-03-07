@@ -10,14 +10,16 @@ jobs:
   cargo_test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Install Rust
-      uses: actions-rs/toolchain@v1
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Cache Cargo dependencies
+      uses: actions/cache@v3
       with:
-        profile: minimal
-        toolchain: stable
-        override: true
+        path: |
+          ~/.cargo
+          target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
     - name: Run tests
-      uses: actions-rs/cargo@v1
-      with:
-        command: test
+      run: cargo test
